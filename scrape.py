@@ -11,20 +11,24 @@ class WebCrawl():
     def __init__(self):
         self.driver=webdriver.Chrome()
         self.start_time = time.strftime("%H:%M:%S%p")
-
+        
     def get_page(self):
         self.initial_time=time.time()
         print(f"starting at {self.start_time}")
-        self.driver.get("https://www.ocado.com/browse/value-just-for-you-323660/everyday-savers-323640")
+        return self.driver.get("https://www.ocado.com/browse/value-just-for-you-323660/everyday-savers-323640")
+    def accept_cookies(self):
         accept_cookies=self.driver.find_element(by=By.XPATH, value ='.//button[@id="onetrust-accept-btn-handler"]')
-        accept_cookies.click()
-        
+        return accept_cookies.click()
+
     def redirect_to_vegan_page(self):
         search = self.driver.find_element(by=By.XPATH, value='.//form[@class="hd-search__form hd-searchProminent__form"]')
         search.click()
         search_box=search.find_element(by=By.XPATH, value='//input[@id="search"]')
         search_box.send_keys('vegan')
         search_box.send_keys(Keys.RETURN)
+        time.sleep(2)
+        return ('https://www.ocado.com/search?entry=vegan')
+
 
     def scroll_down(self):
         x=0
@@ -90,6 +94,7 @@ class WebCrawl():
 def run():
     crawl=WebCrawl()
     crawl.get_page()
+    crawl.accept_cookies()
     crawl.get_img_logo()
     crawl.redirect_to_vegan_page()
     crawl.scroll_down()
