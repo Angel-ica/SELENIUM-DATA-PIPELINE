@@ -47,7 +47,7 @@ class WebCrawl():
                     load_more = self.driver.find_element(by=By.XPATH, value='.//button[@class="btn-primary show-more"]')
                     load_more.click()
                     time.sleep(3)
-                    self.get_vegan_items()
+                    #self.get_vegan_items()
                 
     # def scroll_down(self):
     #     while True:
