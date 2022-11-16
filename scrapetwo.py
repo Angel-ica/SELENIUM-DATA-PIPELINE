@@ -14,6 +14,7 @@ import os.path
 class WebCrawl():
     def __init__(self):
         self.driver=webdriver.Chrome()
+        self.driver.maximize_window()
         self.start_time = time.strftime("%H:%M:%S%p")
         
     def get_page(self):
@@ -34,7 +35,7 @@ class WebCrawl():
 
 
     def scroll_down(self):
-        while self.driver.current_url != 'https://www.ocado.com/search?display=7400&entry=vegan':
+        # while self.driver.current_url != 'https://www.ocado.com/search?display=7400&entry=vegan':
             x=0
             page = self.driver.find_element(by=By.TAG_NAME, value='body')
             while True:
@@ -43,12 +44,27 @@ class WebCrawl():
                 x+=1
                 if x ==55:
                     print('scrolled 55 times, getting vegan items...')
-                    self.get_vegan_items()
-                    load_more = self.driver.find_element(by=By.XPATH, value='.//button[@class="btn-primary show-more"]')
-                    load_more.click()
-                    time.sleep(3)
-                    #self.get_vegan_items()
+                    break
+                    # self.get_vegan_items()
+                    # break
+                # load_more = self.driver.find_element(by=By.XPATH, value='.//button[@class="btn-primary show-more"]')
+                # load_more.click()
+                # time.sleep(3)
+                    # break
+                #self.get_vegan_items()
                 
+
+    def next_page(self):
+        while self.driver.current_url != 'https://www.ocado.com/search?display=7400&entry=vegan':
+
+            self.scroll_down()
+            self.get_vegan_items()
+            load_more=self.driver.find_element(by=By.XPATH, value='.//button[@class="btn-primary show-more"]')
+            if load_more:
+                load_more.click()
+                time.sleep(3)
+                #self.get_items_links()
+            
     # def scroll_down(self):
     #     while True:
     #         try:
@@ -128,11 +144,13 @@ def run():
     crawl.get_img_logo()
     crawl.redirect_to_vegan_page()
     crawl.remove_promo()
-    crawl.scroll_down()
+    crawl.next_page()
+
+    #crawl.scroll_down()
     #crawl.img_dir()
     #crawl.get_items_links()
     #crawl.get_vegan_items()
-    # crawl.store_in_csv()
+    crawl.store_in_csv()
     # crawl.store_in_json()
     # crawl.get_scraped_time()
 
