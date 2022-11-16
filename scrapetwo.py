@@ -33,25 +33,21 @@ class WebCrawl():
         time.sleep(2)
 
 
-    # def scroll_down(self):
-    #     while self.driver.current_url != 'https://www.ocado.com/search?display=7400&entry=vegan':
-    #         x=0
-    #         page = self.driver.find_element(by=By.TAG_NAME, value='body')
-    #         while True:
-    #             page.send_keys(Keys.PAGE_DOWN)
-    #             time.sleep(1) 
-    #             x+=1
-    #             if x ==55:
-    #                 print('scrolled 55 times, getting vegan items...')
-    #                 self.get_vegan_items()
-    #                 load_more = self.driver.find_element(by=By.XPATH, value='.//button[@class="btn-primary show-more"]')
-    #                 load_more.click()
-    #                 time.sleep(3)
-    #                 self.get_vegan_items()
-    #             #break
-                # if not load_more:  
-                    #     print('no more show button')
-                    #     break
+    def scroll_down(self):
+        while self.driver.current_url != 'https://www.ocado.com/search?display=7400&entry=vegan':
+            x=0
+            page = self.driver.find_element(by=By.TAG_NAME, value='body')
+            while True:
+                page.send_keys(Keys.PAGE_DOWN)
+                time.sleep(1) 
+                x+=1
+                if x ==55:
+                    print('scrolled 55 times, getting vegan items...')
+                    self.get_vegan_items()
+                    load_more = self.driver.find_element(by=By.XPATH, value='.//button[@class="btn-primary show-more"]')
+                    load_more.click()
+                    time.sleep(3)
+                    self.get_vegan_items()
                 
     # def scroll_down(self):
     #     while True:
@@ -64,16 +60,6 @@ class WebCrawl():
     #             print("No more Show More button")
     #             break
 
-    def scroll_down(self):
-            x=0
-            page = self.driver.find_element(by=By.TAG_NAME, value='body')
-            while True:
-                page.send_keys(Keys.PAGE_DOWN)
-                time.sleep(1) 
-                x+=1
-                if x ==55:
-                    print('scrolled 55 times, getting vegan items...')
-                    break
 
     def remove_promo(self):
         close_btn=self.driver.find_element(by=By.XPATH, value=("//span[@id='aq-promo-close']/*[name()='svg']"))
@@ -87,36 +73,25 @@ class WebCrawl():
         urllib.request.urlretrieve(str(img),"sample_data.jpg")
         
     def get_vegan_items(self) :
-        while self.driver.current_url != 'https://www.ocado.com/search?display=7400&entry=vegan':
-            print('in here')
-            self.scroll_down()
-            time.sleep(10)
-            self.products=self.driver.find_elements(by=By.XPATH,value= "//ul[@class='fops fops-regular fops-shelf']//li")
-            #print(self.products)
-            self.data_dict={"all_name":[],"all_price":[],"all_url":[],"all_prod_img":[]}
-            for product in self.products:
-                self.name=product.find_element(by=By.XPATH,value=".//h4[@class='fop-title']/span")
-                self.data_dict["all_name"].append(self.name.text)
-                price=product.find_element(By.CLASS_NAME,'fop-price')
-                self.data_dict["all_price"].append(price.text)
-                url=product.find_element(by=By.XPATH, value=".//div[@class='fop-contentWrapper']/a")
-                product_link=url.get_attribute("href")
-                self.data_dict["all_url"].append(product_link)
-                img=product.find_element(by=By.XPATH, value=".//div[@class='fop-contentWrapper']//a//img")
-                prod_img=img.get_attribute("src")
-                self.prod_img_link=('https://www.ocado.com'+prod_img)
-                self.data_dict["all_prod_img"].append(self.prod_img_link)
-                
-                # self.prod_img_path=urllib.request.urlretrieve(prod_img_link,f"image_{name.text}.jpg")
-            #print(self.data_dict)
-                load_more = self.driver.find_element(by=By.XPATH, value='.//button[@class="btn-primary show-more"]')
-                load_more.click()
-        #self.img_dir()
-           
-    # def img_dir(self):
-    #     #self.prod_img_path=urllib.request.urlretrieve(self.prod_img_link,f"image_{self.name.text}.jpg")
-    #     os.mkdir('product_images_folder')
-    #     urllib.request.urlretrieve(self.prod_img_link,f"product_images_folder/image_{self.name.text}.jpg")
+        print('in here')
+        time.sleep(10)
+        self.products=self.driver.find_elements(by=By.XPATH,value= "//ul[@class='fops fops-regular fops-shelf']//li")
+        #print(self.products)
+        self.data_dict={"all_name":[],"all_price":[],"all_url":[],"all_prod_img":[]}
+        for product in self.products:
+            self.name=product.find_element(by=By.XPATH,value=".//h4[@class='fop-title']/span")
+            self.data_dict["all_name"].append(self.name.text)
+            price=product.find_element(By.CLASS_NAME,'fop-price')
+            self.data_dict["all_price"].append(price.text)
+            url=product.find_element(by=By.XPATH, value=".//div[@class='fop-contentWrapper']/a")
+            product_link=url.get_attribute("href")
+            self.data_dict["all_url"].append(product_link)
+            img=product.find_element(by=By.XPATH, value=".//div[@class='fop-contentWrapper']//a//img")
+            prod_img=img.get_attribute("src")
+            self.prod_img_link=('https://www.ocado.com'+prod_img)
+            self.data_dict["all_prod_img"].append(self.prod_img_link)
+            
+        print(self.data_dict)
 
     def img_dir(self):
         if not os.path.isdir('all_product_images_folder'):
@@ -153,10 +128,10 @@ def run():
     crawl.get_img_logo()
     crawl.redirect_to_vegan_page()
     crawl.remove_promo()
-    #crawl.scroll_down()
+    crawl.scroll_down()
     #crawl.img_dir()
     #crawl.get_items_links()
-    crawl.get_vegan_items()
+    #crawl.get_vegan_items()
     # crawl.store_in_csv()
     # crawl.store_in_json()
     # crawl.get_scraped_time()
